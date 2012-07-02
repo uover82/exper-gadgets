@@ -170,7 +170,7 @@
         tu = data.getValue( i,2 );
         tp = data.getValue( i,3 );
         tr = data.getValue( i,4 );
-        if ( tu==u&&tp==p&&tr==r&&d>td+15*60*1000||(tu!=u||tp!=p||tr!=r)&&d!=dp1 ) {
+        if ( tu==u&&tp==p&&tr==r&&d>td+16*60*1000||(tu!=u||tp!=p||tr!=r)&&d!=dp1 ) {
           o = data.getValue( i,7 );
           if ( o > 99 ) {
             td = data.getValue( i,1 );
