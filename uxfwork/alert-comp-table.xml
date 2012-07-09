@@ -136,7 +136,7 @@
       var cs = data.getNumberOfColumns();
       var c,j,d,ed,td,r,tr,p,tp,u,tu,o,to,dp1;
       for ( var i=0;i<rs&&data.getValue(i,2)!=null&&data.getValue(i,2).length>0;i++ ) {
-        c = data.getValue(i,1).replace( /i/g,"/" );
+        c = data.getValue(i,1).replace( /-/g,"/" );
         if ( c.length>0 ) {
           td = new Date(c).getTime();
           tu = data.getValue( i,2 );
