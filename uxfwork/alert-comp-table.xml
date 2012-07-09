@@ -194,7 +194,7 @@
               }
             }
   
-            //alert( 'i:'+i+' j:'+j+' d:'+d.toString()+' o:'+o );
+            alert( 'i:'+i+' j:'+j+' d:'+d.toString()+' o:'+o );
             if ( i==j-1 )
               formatRow( i,[0,cs],'cornflowerblue' );
             else
