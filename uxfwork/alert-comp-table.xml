@@ -142,14 +142,14 @@
           tu = data.getValue( i,2 );
           tp = data.getValue( i,3 );
           tr = data.getValue( i,4 );
-          for ( j=i+1;j<rs;j++ ) {
+          for ( j=i;j<rs;j++ ) {
             d = new Date(data.getValue( j,0 ).replace( /-/g,"/" )).getTime();
             ed = data.getValue( j,1 );
-            if ( ed!=null&&ed.length==0 ) data.setValue( j,1,'.' );
+            if ( j>i&&ed!=null&&ed.length==0 ) data.setValue( j,1,'.' );
             u = data.getValue( j,2 );
             p = data.getValue( j,3 );
             r = data.getValue( j,4 );
-            if ( ed!=null&&ed.length>0||d>td||u!=tu||p!=tp||r!=tr ) {
+            if ( j>i&&ed!=null&&ed.length>0||d>td||u!=tu||p!=tp||r!=tr ) {
               break;
             }
           }
@@ -182,14 +182,14 @@
             tp = data.getValue( i,3 );
             tr = data.getValue( i,4 );
             to = data.getValue( i,7 );
-            for ( j=i+1;j<rs;j++ ) {
+            for ( j=i;j<rs;j++ ) {
               ed = data.getValue( j,1 );
-              if ( ed!=null&&ed.length==0 ) data.setValue( j,1,'.' );
+              if ( j>i&&ed!=null&&ed.length==0 ) data.setValue( j,1,'.' );
               u = data.getValue( j,2 );
               p = data.getValue( j,3 );
               r = data.getValue( j,4 );
               o = data.getValue( j,7 );
-              if ( ed!=null&&ed.length>0||u!=tu||p!=tp||r!=tr||o<100 ) {
+              if ( j>i&&ed!=null&&ed.length>0||u!=tu||p!=tp||r!=tr||o<100 ) {
                 break;
               }
             }
