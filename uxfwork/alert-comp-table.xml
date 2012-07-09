@@ -171,7 +171,7 @@
         tu = data.getValue( i,2 );
         tp = data.getValue( i,3 );
         tr = data.getValue( i,4 );
-        alert ( 'tu:'+tu+ ' u:'+u+' tp:'+tp+' p:'+p+' tr:'+tr+' r:'+r+' d:'+d.toString()+' td:'+td.toString()+' dp1:'+dp1.toString() );
+        alert ( 'tu:'+tu+ ' u:'+u+' tp:'+tp+' p:'+p+' tr:'+tr+' r:'+r+' d:'+d.toString()+' dp1:'+dp1.toString() );
         if ( tu==u&&tp==p&&tr==r&&d>td+16*60*1000||(tu!=u||tp!=p||tr!=r)&&d!=dp1 ) {
           o = data.getValue( i,7 );
           if ( o > 99 ) {
