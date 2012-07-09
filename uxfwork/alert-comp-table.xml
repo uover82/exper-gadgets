@@ -142,7 +142,7 @@
           tu = data.getValue( i,2 );
           tp = data.getValue( i,3 );
           tr = data.getValue( i,4 );
-          for ( j=i;j<rs;j++ ) {
+          for ( j=i+1;j<rs;j++ ) {
             d = new Date(data.getValue( j,0 ).replace( /-/g,"/" )).getTime();
             ed = data.getValue( j,1 );
             if ( j>i&&ed!=null&&ed.length==0 ) data.setValue( j,1,'.' );
