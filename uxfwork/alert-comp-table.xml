@@ -163,6 +163,7 @@
             i = j-1;
           else
             i = j;
+          alert ( 'u:'+u+' p:'+p+' r:'+r+' d:'+d.getTime() );
         }
 
         d = new Date(data.getValue( i,0 ).replace( /-/g,"/" )).getTime();
@@ -170,7 +171,7 @@
         tu = data.getValue( i,2 );
         tp = data.getValue( i,3 );
         tr = data.getValue( i,4 );
-        alert ( 'tu:'+tu+ ' u:'+u+' tp:'+tp+' p:'+p+' tr:'+tr+' r:'+r+' d:'+d+' td:'+td+' dp1:'+dp1 );
+        alert ( 'tu:'+tu+ ' u:'+u+' tp:'+tp+' p:'+p+' tr:'+tr+' r:'+r+' d:'+d.getTime()+' td:'+td.getTime()+' dp1:'+dp1.getTime() );
         if ( tu==u&&tp==p&&tr==r&&d>td+16*60*1000||(tu!=u||tp!=p||tr!=r)&&d!=dp1 ) {
           o = data.getValue( i,7 );
           if ( o > 99 ) {
