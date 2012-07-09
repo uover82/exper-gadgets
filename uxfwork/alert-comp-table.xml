@@ -145,7 +145,7 @@
           for ( j=i+1;j<rs;j++ ) {
             d = new Date(data.getValue( j,0 ).replace( /-/g,"/" )).getTime();
             ed = data.getValue( j,1 );
-            if ( ed!=null&&ed.length==0 ) data.setValue( j,1,'..' );
+            if ( ed!=null&&ed.length==0 ) data.setValue( j,1,'.' );
             u = data.getValue( j,2 );
             p = data.getValue( j,3 );
             r = data.getValue( j,4 );
@@ -163,7 +163,6 @@
             i = j-1;
           else
             i = j;
-          alert ( 'u:'+u+' p:'+p+' r:'+r+' d:'+d+' td:'+td+' c:'+c );
         }
 
         d = new Date(data.getValue( i,0 ).replace( /-/g,"/" )).getTime();
@@ -171,7 +170,6 @@
         tu = data.getValue( i,2 );
         tp = data.getValue( i,3 );
         tr = data.getValue( i,4 );
-        alert ( 'tu:'+tu+ ' u:'+u+' tp:'+tp+' p:'+p+' tr:'+tr+' r:'+r+' d:'+d+' dp1:'+dp1 );
         if ( tu==u&&tp==p&&tr==r&&d>td+16*60*1000||(tu!=u||tp!=p||tr!=r)&&d!=dp1 ) {
           o = data.getValue( i,7 );
           if ( o > 99 ) {
@@ -196,7 +194,7 @@
               }
             }
   
-            alert( 'i:'+i+' j:'+j+' d:'+d+' o:'+o );
+            //alert( 'i:'+i+' j:'+j+' d:'+d+' o:'+o );
             if ( i==j-1 )
               formatRow( i,[0,cs],'cornflowerblue' );
             else
