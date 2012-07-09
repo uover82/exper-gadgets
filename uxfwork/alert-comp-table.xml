@@ -182,7 +182,7 @@
             tp = data.getValue( i,3 );
             tr = data.getValue( i,4 );
             to = data.getValue( i,7 );
-            for ( j=i;j<rs;j++ ) {
+            for ( j=i+1;j<rs;j++ ) {
               ed = data.getValue( j,1 );
               if ( j>i&&ed!=null&&ed.length==0 ) data.setValue( j,1,'.' );
               u = data.getValue( j,2 );
