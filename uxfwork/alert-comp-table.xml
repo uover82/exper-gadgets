@@ -134,7 +134,7 @@
 
       var rs = data.getNumberOfRows();
       var cs = data.getNumberOfColumns();
-      var c,j,d,ed,td,r,tr,p,tp,u,tu,o,to,dp1;
+      var c,j=0,d,ed,td,r,tr,p,tp,u,tu,o,to,dp1;
       for ( var i=0;i<rs&&data.getValue(i,2)!=null&&data.getValue(i,2).length>0;i++ ) {
         c = data.getValue(i,1).replace( /i/g,"/" );
         if ( c.length>0 ) {
