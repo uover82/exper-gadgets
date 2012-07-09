@@ -163,7 +163,7 @@
             i = j-1;
           else
             i = j;
-          alert ( 'u:'+u+' p:'+p+' r:'+r+' d:'+d+' td:'+td );
+          alert ( 'u:'+u+' p:'+p+' r:'+r+' d:'+d+' td:'+td+' c:'+c );
         }
 
         d = new Date(data.getValue( i,0 ).replace( /-/g,"/" )).getTime();
