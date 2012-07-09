@@ -175,7 +175,7 @@
           if ( o > 99 ) {
             td = data.getValue( i,1 );
             if ( td!=null&&td.length==0 ) {
-              data.setValue( i,1,'.' );
+              data.setValue( i,1,'..' );
               td = 0;
             }
             tu = data.getValue( i,2 );
