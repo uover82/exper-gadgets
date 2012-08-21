@@ -12,6 +12,7 @@
     <Require feature="settitle" />
     <Require feature="idi" />
     <Require feature="locked-domain" />
+    <Require feature="setprefs" />
     <Locale messages="http://www.google.com/ig/modules/chart_content/en_ALL.xml" />
     <Locale lang="ar" messages="http://www.google.com/ig/modules/chart_content/ar_ALL.xml" language_direction="rtl" />
     <Locale lang="bg" messages="http://www.google.com/ig/modules/chart_content/bg_ALL.xml" />
@@ -80,6 +81,7 @@
   <UserPref name="maxx" display_name="__MSG_maxx__" />
   <UserPref name="raxis_series" display_name="__MSG_raxis_series__"/>
   <UserPref name="raxis_title" display_name="__MSG_raxis_title__"/>
+  <UserPref name="raxis_log_scale" display_name="__MSG_raxis_logscale__"/>
   <UserPref name="_table_query_refresh_interval" display_name="__MSG_tablequeryrefreshinterval__" default_value="300" datatype="enum" required="false">
     <EnumValue value="0" display_value="__MSG_never__" />
     <EnumValue value="60" display_value="1" />
@@ -186,7 +188,11 @@
           vAxes[0] = {};
           vAxes[1] = {};
           vAxes[1]['title'] = ra_title;
-        } 
+        }
+        if ( prefs.getString('raxis_log_scale') != 'null' && prefs.getString('raxis_log_scale') != '' ) {
+          var ra_log_scale = prefs.getBool('raxis_log_scale');
+          vAxes[1]['logScale'] = ra_log_scale;
+        }
       }
 
       var pv = prefs.getBool('pct_view');
@@ -203,54 +209,83 @@
       // Remove the loading message (if exists).
       var loadingMsgContainer = document.getElementById('loading');
       loadingMsgContainer.style.display = 'none';
-     
-      if (!gadgetHelper.validateResponse(response)) {
-        // Default error handling was done, just leave.
-        return;
-      }
 
-      dataTable = response.getDataTable();
+      if ( gadgetHelper.validateResponse(response) ) {
+        var dataTable = response.getDataTable();
+        var tx = prefs.getBool('haxis_time_format');
+        if ( tx )
+          formatTimeXAxis( dataTable );
+        var ref = getMaxColumn( dataTable );
 
-      var tx = prefs.getBool("haxis_time_format");
+        // Define a slider control for the y-axis.
+        var slider = new google.visualization.ControlWrapper({
+          'controlType': 'NumberRangeFilter',
+          'containerId': 'control',
+          'options': {
+            'filterColumnIndex': ref, 'minValue': 0,
+            'ui': { 'labelStacking':'horizontal','orientation':'vertical','label':'' }
+          },
+          'dataTable' : dataTable
+        });
 
-      if ( tx )
-        formatTimeXAxis( dataTable );
-
-      var ref = getMaxColumn( dataTable );
-
-      // Define a slider control for the y-axis.
-      var slider = new google.visualization.ControlWrapper({
-        'controlType': 'NumberRangeFilter',
-        'containerId': 'control',
-        'options': {
-          'filterColumnIndex': ref, 'minValue': 0,
-          'ui': { 'labelStacking':'horizontal','orientation':'vertical','label':'' }
-        },
-        'dataTable' : dataTable
-      });
-
-      // Define a Line chart
-      var lineChart = new google.visualization.ChartWrapper({
-        'chartType': 'LineChart',
-        'containerId': 'chart',
-        'options': options,
-        'dataTable' : dataTable
-      });
+        // Define a Line chart
+        var lineChart = new google.visualization.ChartWrapper({
+          'chartType': 'LineChart',
+          'containerId': 'chart',
+          'options': options,
+          'dataTable' : dataTable
+        });
       
-      lineChart.draw();
-      slider.draw();
-
-      function onControlStateChange() {
-        var controlState = slider.getState();
-        //var filteredView = filterView( dataTable,controlState.lowValue,controlState.highValue );
-        //lineChart.setView( filteredView.toJSON() );
-        var filteredTable = filterTable( dataTable,controlState.lowValue,controlState.highValue );
-        lineChart.setDataTable( filteredTable.toJSON() );
         lineChart.draw();
-      }
+        slider.draw();
 
-      google.visualization.events.addListener( slider,'statechange',onControlStateChange );
-    };
+        function onControlStateChange() {
+          var controlState = slider.getState();
+          //var filteredView = filterView( dataTable,controlState.lowValue,controlState.highValue );
+          //lineChart.setView( filteredView.toJSON() );
+          var filteredTable = filterTable( dataTable,controlState.lowValue,controlState.highValue );
+          lineChart.setDataTable( filteredTable.toJSON() );
+          lineChart.draw();
+        }
+
+        google.visualization.events.addListener( slider,'statechange',onControlStateChange );
+      }
+      else {
+        var wqu = prefs.getString('_table_query_url');
+        var up = wqu.substring( 0,wqu.indexOf('select') );
+        var ucs = wqu.substring( wqu.indexOf('select')+6,wqu.indexOf('&dtx') );
+        var us = wqu.substring( wqu.indexOf('&dtx'),wqu.length );
+        var cna = ucs.replace( / Col/g,'' ).split( ',' );
+        var cnamx = Math.max.apply( Math,cna );
+        var ec = Number.max_value;
+
+        var em = response.getDetailedMessage();
+        if ( em.indexOf('does not exist') ) {
+          var ii=em.indexOf('[Col')+4;
+          if ( ii>=4 ) {
+            var ss = em.substring( ii );
+            var ei = ss.indexOf( ']' );
+            if ( ei>=0 )
+              ec = ss.substring( 0,ei );
+          }
+        }
+
+        var query, nqu, nucs;
+        for ( i=cnamx;i>0;i-- ) {
+          nucs = ucs.replace(', Col'+i,'');
+          if ( nucs.length<ucs.length&&i<=ec ) {
+            ucs = nucs;
+            cnamx = i;
+            break;
+          }
+        }
+
+        nqu = up+'select'+ucs+us;
+        prefs.set( '_table_query_url',nqu );
+        query = gadgetHelper.createQueryFromPrefs( prefs );
+        query.send( responseHandler );
+      }
+    }
 
     function formatTimeXAxis( _table ) {
       // format the x-axis in time-only format.
