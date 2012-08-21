@@ -2,18 +2,18 @@
 <Module>
 
   <ModulePrefs
-      title="__MSG_title_lineChart__"
-      description="__MSG_line_description__"
+      title="__MSG_title_areaChart__"
+      description="__MSG_area_description__"
       author="Google Engineering"
       author_affiliation="Google Inc."
-      author_email="visualization.api+line-chart@gmail.com"
-      screenshot="http://www.google.com/ig/modules/line-chart.png"
-      thumbnail="http://www.google.com/ig/modules/line-chart-thm.png">
+      author_email="visualization.api+area-chart@gmail.com"
+      screenshot="http://www.google.com/ig/modules/area-chart.png"
+      thumbnail="http://www.google.com/ig/modules/area-chart-thm.png">
     <Require feature="settitle" />
     <Require feature="idi" />
     <Require feature="locked-domain" />
     <Require feature="setprefs" />
-   <Locale messages="http://www.google.com/ig/modules/chart_content/en_ALL.xml" />
+    <Locale messages="http://www.google.com/ig/modules/chart_content/en_ALL.xml" />
     <Locale lang="ar" messages="http://www.google.com/ig/modules/chart_content/ar_ALL.xml" language_direction="rtl" />
     <Locale lang="bg" messages="http://www.google.com/ig/modules/chart_content/bg_ALL.xml" />
     <Locale lang="ca" messages="http://www.google.com/ig/modules/chart_content/ca_ALL.xml" />
@@ -73,11 +73,17 @@
     <EnumValue value="4" display_value="__MSG_noLegend__" />
   </UserPref>
 -->
-  <UserPref name="smoothline" display_name="__MSG_smoothline__" datatype="bool" />
-  <UserPref name="showpoints" display_name="__MSG_showpoints__" datatype="bool" default_value="true"/>
+  <UserPref name="stacked" display_name="__MSG_stacked__" datatype="bool" />
+  <UserPref name="showpoints" display_name="__MSG_showpoints__" datatype="bool" default_value="true" />
   <UserPref name="raxis_series" display_name="__MSG_raxis_series__"/>
   <UserPref name="raxis_title" display_name="__MSG_raxis_title__"/>
   <UserPref name="raxis_log_scale" display_name="__MSG_raxis_logscale__"/>
+<!--
+  <UserPref name="miny" display_name="__MSG_miny__" />
+  <UserPref name="maxy" display_name="__MSG_maxy__" />
+  <UserPref name="minx" display_name="__MSG_minx__" />
+  <UserPref name="maxx" display_name="__MSG_maxx__" />
+-->
   <UserPref name="_table_query_refresh_interval" display_name="__MSG_tablequeryrefreshinterval__" default_value="300" datatype="enum" required="false">
     <EnumValue value="0" display_value="__MSG_never__" />
     <EnumValue value="60" display_value="1" />
@@ -98,7 +104,7 @@
 
   <script type="text/javascript">
     _IG_RegisterOnloadHandler(loadVisualizationAPI);
-    var lineChart;
+    var areaChart;
     var options = {};
 
     var vAxis = {};
@@ -117,7 +123,7 @@
     var title = prefs.getString('title');
     if (title) {
       _IG_SetTitle(title);
-    }      
+    }
 
     function loadVisualizationAPI() {
       google.load('visualization', '1', {packages: ['corechart']});
@@ -131,10 +137,9 @@
       var container = document.getElementById('chart');
       container.style.width = document.body.clientWidth;
       container.style.height = document.body.clientHeight;
-      lineChart = new google.visualization.LineChart(container);
+      areaChart = new google.visualization.AreaChart(container);
       options['title'] = prefs.getString('chartTitle');
       options['isStacked'] = prefs.getBool('stacked');
-      options['curveType'] = prefs.getBool('smoothline');
       options['pointSize'] = prefs.getBool('showpoints') ? 1 : 0;
       //var legendOptions = ['right', 'left', 'top', 'bottom', 'none'];
       //options['legend'] = legendOptions[prefs.getInt('legend')];
@@ -143,6 +148,22 @@
       vAxis['logScale'] = prefs.getBool('vaxis_log_scale');
 
       hAxis['title'] = prefs.getString('labelx');
+
+      /*
+      if (prefs.getString('miny') != '') {
+        vAxis['minValue'] = prefs.getInt('miny');
+      }
+      if (prefs.getString('maxy') != '') {
+        vAxis['maxValue'] = prefs.getInt('maxy');
+      }
+
+      if (prefs.getString('minx') != '') {
+        hAxis['minValue'] = prefs.getInt('minx');
+      }
+      if (prefs.getString('maxx') != '') {
+        hAxis['maxValue'] = prefs.getInt('maxx');
+      }
+      */
 
       if ( prefs.getString('raxis_series') != 'null' && prefs.getString('raxis_series') != '') {
         var series_elements = eval( prefs.getString('raxis_series') );
@@ -171,7 +192,6 @@
 
       if ( gadgetHelper.validateResponse(response) ) {
         var dataTable = response.getDataTable();
-        console.log( dataTable );
         var tx = prefs.getBool('haxis_time_format');
         if ( tx )
           formatTimeXAxis( dataTable );
@@ -181,11 +201,11 @@
           dataTable = filterTable( dataTable,0,100 );
         }
 
-        lineChart.draw(dataTable, options);
+        areaChart.draw(dataTable, options);
 
         // Add our over/out handlers.
-        //google.visualization.events.addListener(lineChart, 'onmouseover', mouseOver);
-        //google.visualization.events.addListener(lineChart, 'onmouseout', mouseOut);
+        //google.visualization.events.addListener(areaChart, 'onmouseover', mouseOver);
+        //google.visualization.events.addListener(areaChart, 'onmouseout', mouseOut);
       }
       else {
         var wqu = prefs.getString('_table_query_url');
@@ -225,13 +245,13 @@
     }
 
     function mouseOver(e) {
-      lineChart.setSelection([e]);
+      areaChart.setSelection([e]);
     };
- 
+  
     function mouseOut(e) {
-      setTimeout("lineChart.setSelection([{'row': null, 'column': null}])", 3000);
+      setTimeout("areaChart.setSelection([{'row': null, 'column': null}])", 3000);
     };
-   
+
     function formatTimeXAxis(data) {
       // format the x-axis in time-only format.
       var v;
